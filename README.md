@@ -1,7 +1,7 @@
 # TaskUtils
 TaskUtils lib for use with Drupi. Download Drupi at https://drupi.js.org
 
-The current latest version of TaskUtils is **1.0**, and this documentation will always be in reference to the latest version of TaskUtils.
+The current latest version of TaskUtils is **1.0.1**, and this documentation will always be in reference to the latest version of TaskUtils.
 
 # What's TaskUtils?
 TaskUtils is a Drupi library that allows Drupi script creators to easily create and execute task "sequences". The main component of TaskUtils is the `SequenceBuilder` constructor. A `SequenceBuilder` sequence makes it possible to easily add delays, toggle async execution and more to your code without cluttering it with a spam of setTimeout callbacks.
