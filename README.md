@@ -12,8 +12,11 @@ Firstly, make sure that `Drupi` is installed on your server. If it isn't, you ca
 There are 4 methods that can be used on a SequenceBuilder object. These are:
 
 `addVoid(function)` - add a function to be executed
+
 `addDelay(int)` - add a delay before continuing execution
+
 `setAsync(boolean)` - switch between executing code sync or async
+
 `execute()` - run your sequence
 
 There are simple and advanced ways to use SequenceBuilder. Let's cover the simple way first.
