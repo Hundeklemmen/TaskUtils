@@ -1,5 +1,5 @@
 // TaskUtils by SlickNicky10
-// Version: 1.0
+// Version: 1.0.1
 // Github: https://github.com/SlickNicky10/TaskUtils
 
 const SequenceBuilder = function(){
