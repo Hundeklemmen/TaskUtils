@@ -29,8 +29,9 @@ const SequenceBuilder = function(){
                 if(!sequence.isAsync){
                     sequence.exec[i].void();
                 } else {
+                    var run = sequence.exec[i].void;
                     setAsyncTimeout(function(){
-                        sequence.exec[i].void();
+                        run();
                     }, 0);
                 }
                 i++;
