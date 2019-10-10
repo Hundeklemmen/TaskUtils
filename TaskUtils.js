@@ -1,21 +1,37 @@
 // TaskUtils by SlickNicky10
-// Version: 1.0.1
+// Version: 1.1
 // Github: https://github.com/SlickNicky10/TaskUtils
 
 const SequenceBuilder = function(){
     var sequence = {};
     sequence.exec = [];
     sequence.isAsync = false;
+    sequence.cancelled = false;
     sequence.setAsync = function(runAsync){
         sequence.exec.push({type: "SET_ASYNC", value: runAsync});
         return sequence;
     }
+    sequence.setCancelled = function(cancel){
+        sequence.cancelled = cancel;
+        return sequence;
+    }
     sequence.addVoid = function(runnable){
-        sequence.exec.push({type: "VOID", void: runnable});
+        sequence.exec.push({type: "VOID", void: runnable, getSequence: function(){return sequence;}});
         return sequence;
     }
     sequence.addDelay = function(delay){
         sequence.exec.push({type: "DELAY", value: delay});
+        return sequence;
+    }
+    sequence.addBulk = function(instructionSet, amount){
+        if(!amount) amount = 1;
+        for(var i = 0; i < amount; i++){
+            instructionSet.forEach(function(instruction){
+                if(instruction.type == "VOID") sequence.addVoid(instruction.value);
+                if(instruction.type == "DELAY") sequence.addDelay(instruction.value);
+                if(instruction.type == "SET_ASYNC") sequence.setAsync(instruction.value);
+            })
+        }
         return sequence;
     }
     sequence.execute = function(){
@@ -28,15 +44,18 @@ const SequenceBuilder = function(){
             if(sequence.exec[i].type == "VOID"){
                 if(!sequence.isAsync){
                     sequence.exec[i].void();
+                    i++;
+                    if(i < mx && !sequence.cancelled){
+                        next();
+                    }
                 } else {
-                    var run = sequence.exec[i].void;
                     setAsyncTimeout(function(){
-                        run();
+                        sequence.exec[i].void();
+                        i++;
+                        if(i < mx && !sequence.cancelled){
+                            next();
+                        }
                     }, 0);
-                }
-                i++;
-                if(i < mx){
-                    next();
                 }
             } else if(sequence.exec[i].type == "DELAY"){
                 if(!sequence.isAsync){
@@ -65,4 +84,52 @@ const SequenceBuilder = function(){
         return sequence;
     }
     return sequence;
+}
+const loop = {
+    players: function(runnable){
+        const players = server.getOnlinePlayers();
+        for(var i in players){
+            runnable(players[i]);
+        }
+    },
+    action: function(action, iterations, delay, async, exitCallback){
+        if(!action) return;
+        if(!action.void) return;
+        if(!iterations) iterations = 0;
+        if(!delay) delay = 0;
+        action.setCancelled = function(cancel){
+            action.cancel = cancel;
+        }
+        if(!async){
+            (function loop(i){
+                setTimeout(function(){
+                    if(!action.cancel){
+                        action.void();
+                    } else {
+                        return;
+                    }
+                    if(--i){
+                        loop(i);
+                    } else {
+                        setTimeout(exitCallback, delay);
+                    }
+                }, (iterations == i) ? 0 : delay);
+            }(iterations));
+        } else {
+            (function loop(i){
+                setAsyncTimeout(function(){
+                    if(!action.cancel){
+                        action.void();
+                    } else {
+                        return;
+                    }
+                    if(--i){
+                        loop(i);
+                    } else {
+                        setAsyncTimeout(exitCallback, delay);
+                    }
+                }, (iterations == i) ? 0 : delay);
+            }(iterations));
+        };
+    }
 }
