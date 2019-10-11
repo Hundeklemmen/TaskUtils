@@ -11,7 +11,7 @@ Firstly, make sure that `Drupi` is installed on your server. If it isn't, you ca
 
 # How to use SequenceBuilder
 
-There are 4 methods that can be used on a SequenceBuilder object. These are:
+There are 6 methods that can be used on a SequenceBuilder object. These are:
 
 `addVoid(function)` - add a function to be executed
 
