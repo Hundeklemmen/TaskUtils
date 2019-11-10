@@ -1,5 +1,5 @@
 // TaskUtils by SlickNicky10
-// Version: 1.1
+// Version: 1.1.1
 // Github: https://github.com/SlickNicky10/TaskUtils
 
 const SequenceBuilder = function(){
@@ -111,7 +111,7 @@ const loop = {
                     if(--i){
                         loop(i);
                     } else {
-                        setTimeout(exitCallback, delay);
+                        if(exitCallback) setTimeout(exitCallback, delay);
                     }
                 }, (iterations == i) ? 0 : delay);
             }(iterations));
@@ -126,7 +126,7 @@ const loop = {
                     if(--i){
                         loop(i);
                     } else {
-                        setAsyncTimeout(exitCallback, delay);
+                        if(exitCallback) setAsyncTimeout(exitCallback, delay);
                     }
                 }, (iterations == i) ? 0 : delay);
             }(iterations));
